@@ -1,0 +1,6 @@
+{
+  "name": "Sonic Beats",
+  "description": "Sonic Beats: Your digital MIDI controller and lightweight open-source web DAW.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

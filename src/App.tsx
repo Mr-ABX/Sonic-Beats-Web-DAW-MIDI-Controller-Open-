@@ -12,6 +12,7 @@ import { MixerPanel } from './components/MixerPanel';
 import { InstrumentPanel } from './components/InstrumentPanel';
 import { SequencerPanel } from './components/SequencerPanel';
 import { PerformanceArea } from './components/PerformanceArea';
+import { SamplerPanel } from './components/SamplerPanel';
 
 const emptySequence = () => ({
   kick:  Array(16).fill(false),
@@ -28,6 +29,11 @@ export default function App() {
   const [activePreset, setActivePreset] = useState<SynthPreset>(presets[0]);
   const activePresetRef = useRef(activePreset);
   useEffect(() => { activePresetRef.current = activePreset; }, [activePreset]);
+
+  // Sidebar Workspace State
+  const [sidebarMode, setSidebarMode] = useState<'mixer' | 'sampler'>('mixer');
+  const [drumKit, setDrumKit] = useState('808');
+  const [customSample, setCustomSample] = useState<AudioBuffer | null>(null);
 
   // Sequencer State & Banks
   const [showSeq, setShowSeq] = useState(false);
@@ -218,6 +224,11 @@ export default function App() {
     return () => cancelAnimationFrame(req);
   }, [visualizerMode]);
 
+  const customSampleRef = useRef(customSample);
+  useEffect(() => { customSampleRef.current = customSample; }, [customSample]);
+  const drumKitRef = useRef(drumKit);
+  useEffect(() => { drumKitRef.current = drumKit; }, [drumKit]);
+
   // Sequencer loop
   useEffect(() => {
     if (!isPlaying) return;
@@ -228,8 +239,7 @@ export default function App() {
     const intervalId = setInterval(() => {
       ['kick', 'snare', 'hatCl', 'clap'].forEach(drum => {
         if (sequenceRef.current[drum][step]) {
-           audio.playDrum(drum);
-           // Trigger drum visual pulse manually or let audio engine pickup
+           audio.playDrum(drum, drumKitRef.current, customSampleRef.current);
         }
       });
       setCurrentStep(step);
@@ -443,7 +453,7 @@ export default function App() {
   }, [removeNote]);
 
   const triggerDrum = useCallback((type: string) => {
-    audio.playDrum(type);
+    audio.playDrum(type, drumKitRef.current, customSampleRef.current);
     addNote(type);
     setTimeout(() => { removeNote(type); }, 150);
 
@@ -613,18 +623,33 @@ export default function App() {
           {/* SIDE RAIL: TWEAKS & MIXER */}
           <div className="lg:col-span-3 flex flex-col gap-3">
             
-            <MixerPanel 
-              volume={volume} setVolume={setVolume}
-              synthVol={synthVol} setSynthVol={setSynthVol}
-              bassVol={bassVol} setBassVol={setBassVol}
-              drumVol={drumVol} setDrumVol={setDrumVol}
-              delayMix={delayMix} setDelayMix={setDelayMix}
-              reverbMix={reverbMix} setReverbMix={setReverbMix}
-              reverbEnv={reverbEnv} setReverbEnv={setReverbEnv}
-              midiLearnMode={midiLearnMode}
-              midiLearnTarget={midiLearnTarget}
-              handleMidiSelect={handleMidiSelect}
-            />
+            <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
+               <button onClick={() => setSidebarMode('mixer')} className={`flex-1 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-colors ${sidebarMode === 'mixer' ? 'bg-white/10 text-white shadow-sm' : 'text-[#666] hover:text-white'}`}>Mixer</button>
+               <button onClick={() => setSidebarMode('sampler')} className={`flex-1 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-colors ${sidebarMode === 'sampler' ? 'bg-[#c934ff]/20 text-[#c934ff] border border-[#c934ff]/30 shadow-sm' : 'text-[#666] hover:text-white'}`}>Sampler</button>
+            </div>
+
+            <div className={sidebarMode === 'mixer' ? 'block' : 'hidden'}>
+              <MixerPanel 
+                volume={volume} setVolume={setVolume}
+                synthVol={synthVol} setSynthVol={setSynthVol}
+                bassVol={bassVol} setBassVol={setBassVol}
+                drumVol={drumVol} setDrumVol={setDrumVol}
+                delayMix={delayMix} setDelayMix={setDelayMix}
+                reverbMix={reverbMix} setReverbMix={setReverbMix}
+                reverbEnv={reverbEnv} setReverbEnv={setReverbEnv}
+                midiLearnMode={midiLearnMode}
+                midiLearnTarget={midiLearnTarget}
+                handleMidiSelect={handleMidiSelect}
+              />
+            </div>
+
+            <div className={sidebarMode === 'sampler' ? 'block' : 'hidden'}>
+              <SamplerPanel 
+                onSampleRecorded={setCustomSample} 
+                audioCtxRef={{ current: audio.ctx }} 
+                customSample={customSample} 
+              />
+            </div>
 
             <InstrumentPanel 
               isEditing={isEditing} setIsEditing={setIsEditing}
@@ -650,6 +675,7 @@ export default function App() {
               releaseNote={releaseNote}
               DRUM_PADS={DRUM_PADS}
               PIANO_KEYS={PIANO_KEYS}
+              activePresetCategory={activePreset?.category}
             />
 
             <SequencerPanel 
@@ -663,8 +689,8 @@ export default function App() {
               isLooping={isLooping} setIsLooping={setIsLooping}
               clearLoop={clearLoop}
               sequence={sequence} currentStep={currentStep} toggleStep={toggleStep}
+              drumKit={drumKit} setDrumKit={setDrumKit}
             />
-
           </div>
         </div>
 

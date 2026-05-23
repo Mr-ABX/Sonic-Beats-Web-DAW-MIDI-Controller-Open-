@@ -22,6 +22,8 @@ export const CORE_PRESETS: SynthPreset[] = [
   { id: 'pluck1', name: 'Harp Pluck', category: 'Pluck', type: 'triangle', octaveOffset: 1, attack: 0.005, decay: 0.2, sustain: 0.0, release: 0.3 },
   { id: 'guitar1', name: 'Electric Mute', category: 'Guitar', type: 'triangle', octaveOffset: 0, attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.2 },
   { id: 'guitar2', name: 'Fuzz Lead', category: 'Guitar', type: 'square', octaveOffset: 0, attack: 0.05, decay: 0.5, sustain: 0.4, release: 0.5 },
+  { id: 'guitar3', name: 'Acoustic Steel', category: 'Guitar', type: 'triangle', octaveOffset: 0, attack: 0.005, decay: 0.4, sustain: 0.2, release: 0.8 },
+  { id: 'strings1', name: 'Violin Arco', category: 'Strings', type: 'sawtooth', octaveOffset: 0, attack: 0.15, decay: 0.2, sustain: 0.8, release: 0.4 },
   { id: 'keys1', name: 'Rhodes Vibe', category: 'Keys', type: 'sine', octaveOffset: 0, attack: 0.02, decay: 0.4, sustain: 0.4, release: 0.8 },
   { id: 'keys2', name: '80s Synth Brass', category: 'Keys', type: 'sawtooth', octaveOffset: 0, attack: 0.15, decay: 0.3, sustain: 0.7, release: 0.4 },
   { id: 'fx1', name: 'Space Laser', category: 'FX', type: 'sawtooth', octaveOffset: 2, attack: 0.01, decay: 0.8, sustain: 0.0, release: 0.8 },

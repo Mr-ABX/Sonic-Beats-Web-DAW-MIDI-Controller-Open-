@@ -278,18 +278,36 @@ class AudioEngine {
     this.activeNotes.delete(noteId);
   }
 
-  playDrum(type: string) {
+  playDrum(type: string, drumKit: string = '808', customSample?: AudioBuffer | null) {
     this.init();
     if (!this.ctx || !this.drumGain) return;
     const t = this.ctx.currentTime;
+
+    // Handle custom sample override for clap
+    if (type === 'clap' && customSample) {
+        const source = this.ctx.createBufferSource();
+        source.buffer = customSample;
+        source.connect(this.drumGain);
+        source.start(t);
+        return;
+    }
+
     const gain = this.ctx.createGain();
     gain.connect(this.drumGain);
 
     if (type === 'kick' || type === 'perc1' || type === 'perc2' || type === 'mod') {
       const osc = this.ctx.createOscillator();
       osc.connect(gain);
-      let startFreq = type === 'kick' ? 150 : type === 'perc1' ? 400 : type === 'mod' ? 80 : 300;
-      let dur = type === 'kick' ? 0.4 : 0.2;
+      
+      let startFreq = 150;
+      let dur = 0.4;
+      if (type === 'kick') {
+          startFreq = drumKit === 'acoustic' ? 100 : drumKit === 'electro' ? 200 : 150;
+          dur = drumKit === 'acoustic' ? 0.3 : drumKit === 'electro' ? 0.2 : 0.4;
+      } else {
+          startFreq = type === 'perc1' ? 400 : type === 'mod' ? 80 : 300;
+          dur = 0.2;
+      }
       
       osc.frequency.setValueAtTime(startFreq, t);
       osc.frequency.exponentialRampToValueAtTime(0.01, t + dur);
@@ -309,17 +327,17 @@ class AudioEngine {
         filter.connect(gain);
         
         if (type === 'hatCl' || type === 'hatOp') {
-            filter.type = 'highpass';
-            filter.frequency.value = 8000;
+            filter.type = drumKit === 'electro' ? 'bandpass' : 'highpass';
+            filter.frequency.value = drumKit === 'acoustic' ? 6000 : drumKit === 'electro' ? 9000 : 8000;
             gain.gain.setValueAtTime(0.8, t);
-            const dur = type === 'hatOp' ? 0.4 : 0.05;
+            const dur = type === 'hatOp' ? (drumKit === 'acoustic' ? 0.5 : 0.4) : (drumKit === 'electro' ? 0.03 : 0.05);
             gain.gain.exponentialRampToValueAtTime(0.01, t + dur);
             noise.start(t);
             noise.stop(t + dur);
         } else if (type === 'snare' || type === 'clap' || type === 'crush' || type === 'fx') {
             filter.type = 'bandpass';
-            filter.frequency.value = type === 'snare' ? 1000 : type === 'crush' ? 400 : 2500;
-            const dur = type === 'snare' ? 0.2 : type === 'fx' ? 0.8 : 0.15;
+            filter.frequency.value = type === 'snare' ? (drumKit==='electro' ? 1200 : drumKit==='acoustic' ? 800 : 1000) : type === 'crush' ? 400 : 2500;
+            const dur = type === 'snare' ? (drumKit==='electro' ? 0.15 : 0.25) : type === 'fx' ? 0.8 : 0.15;
             gain.gain.setValueAtTime(1.2, t);
             gain.gain.exponentialRampToValueAtTime(0.01, t + dur);
             noise.start(t);
@@ -329,14 +347,14 @@ class AudioEngine {
             if (type === 'snare') {
                 const osc = this.ctx.createOscillator();
                 const oscGain = this.ctx.createGain();
-                osc.type = 'triangle';
+                osc.type = drumKit === 'electro' ? 'square' : 'triangle';
                 osc.connect(oscGain);
                 oscGain.connect(this.drumGain);
-                osc.frequency.setValueAtTime(250, t);
+                osc.frequency.setValueAtTime(drumKit === 'acoustic' ? 200 : 250, t);
                 oscGain.gain.setValueAtTime(0.6, t);
-                oscGain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+                oscGain.gain.exponentialRampToValueAtTime(0.01, t + (drumKit === 'electro' ? 0.1 : 0.15));
                 osc.start(t);
-                osc.stop(t + 0.15);
+                osc.stop(t + (drumKit === 'electro' ? 0.1 : 0.15));
             }
         }
     }

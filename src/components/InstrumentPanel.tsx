@@ -86,7 +86,7 @@ export function InstrumentPanel({
            </div>
            
            <div className="flex items-center gap-1 overflow-x-auto pb-1 custom-scrollbar">
-             {['All', 'Lead', 'Bass', 'Pad', 'Pluck', 'Guitar', 'Keys', 'FX'].map(cat => (
+             {['All', 'Lead', 'Bass', 'Pad', 'Pluck', 'Guitar', 'Strings', 'Keys', 'FX'].map(cat => (
                 <button key={cat} onClick={() => setPresetCategory(cat)} className={`text-[8px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border whitespace-nowrap transition-colors ${presetCategory === cat ? 'bg-white/10 border-white/20 text-white' : 'bg-transparent border-transparent text-[#666] hover:text-[#bbb]'}`}>
                   {cat}
                 </button>

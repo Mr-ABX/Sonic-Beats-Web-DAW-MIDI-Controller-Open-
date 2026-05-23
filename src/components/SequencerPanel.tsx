@@ -20,6 +20,8 @@ interface SequencerPanelProps {
   sequence: any;
   currentStep: number;
   toggleStep: (track: string, step: number) => void;
+  drumKit: string;
+  setDrumKit: (val: string) => void;
 }
 
 export function SequencerPanel({
@@ -32,7 +34,8 @@ export function SequencerPanel({
   isQuantize, setIsQuantize,
   isLooping, setIsLooping,
   clearLoop,
-  sequence, currentStep, toggleStep
+  sequence, currentStep, toggleStep,
+  drumKit, setDrumKit
 }: SequencerPanelProps) {
   return (
     <div className="bg-[#0c0c0e]/80 backdrop-blur-2xl border border-white/5 rounded-2xl p-4 flex flex-col gap-3 shadow-[0_8px_30px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)] overflow-x-auto custom-scrollbar">
@@ -67,6 +70,15 @@ export function SequencerPanel({
         </div>
         
         <div className="flex items-center gap-2 border-t xl:border-t-0 xl:border-l border-white/5 pt-3 xl:pt-0 xl:pl-3">
+            <select
+               value={drumKit}
+               onChange={(e) => setDrumKit(e.target.value)}
+               className="bg-black/20 border border-white/5 text-[#888] hover:text-white text-[9px] font-bold uppercase tracking-widest px-2 py-1.5 rounded outline-none w-20 appearance-none mr-2 transition-colors cursor-pointer"
+            >
+               <option value="808">808 Kit</option>
+               <option value="acoustic">Acoustic</option>
+               <option value="electro">Electro</option>
+            </select>
             <span className="text-[#555] text-[8px] font-mono tracking-widest uppercase mr-2 hidden md:block">Live Looper</span>
             <button onClick={handleExportSequence} className="flex flex-col items-center justify-center p-2 lg:p-1.5 rounded-md bg-black/20 hover:bg-white/5 text-[#888] hover:text-white transition-colors border border-white/5 mr-2" title="Save Sequence JSON">
                <Save className="w-3.5 h-3.5 lg:w-3 lg:h-3" />

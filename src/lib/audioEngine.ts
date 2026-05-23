@@ -14,6 +14,10 @@ class AudioEngine {
   mediaRecorder: MediaRecorder | null = null;
   audioChunks: Blob[] = [];
   
+  eqLow: BiquadFilterNode | null = null;
+  eqMid: BiquadFilterNode | null = null;
+  eqHigh: BiquadFilterNode | null = null;
+  
   delayNode: DelayNode | null = null;
   delayFeedback: GainNode | null = null;
   delayWet: GainNode | null = null;
@@ -43,6 +47,28 @@ class AudioEngine {
       this.analyser.fftSize = 64;
       this.analyser.smoothingTimeConstant = 0.7;
 
+      // EQ Nodes
+      this.eqLow = this.ctx.createBiquadFilter();
+      this.eqLow.type = 'lowshelf';
+      this.eqLow.frequency.value = 320;
+      this.eqLow.gain.value = 0;
+
+      this.eqMid = this.ctx.createBiquadFilter();
+      this.eqMid.type = 'peaking';
+      this.eqMid.frequency.value = 1000;
+      this.eqMid.Q.value = 0.5;
+      this.eqMid.gain.value = 0;
+
+      this.eqHigh = this.ctx.createBiquadFilter();
+      this.eqHigh.type = 'highshelf';
+      this.eqHigh.frequency.value = 3200;
+      this.eqHigh.gain.value = 0;
+
+      // Connect EQ chain
+      this.masterGain.connect(this.eqLow);
+      this.eqLow.connect(this.eqMid);
+      this.eqMid.connect(this.eqHigh);
+
       // Effects Nodes
       this.delayNode = this.ctx.createDelay(3.0);
       this.delayNode.delayTime.value = 0.4;
@@ -64,10 +90,10 @@ class AudioEngine {
       this.reverbNode.connect(this.reverbWet);
       this.reverbWet.connect(this.analyser);
 
-      // Main Routing: Master -> [Analyser, Delay, Reverb]
-      this.masterGain.connect(this.analyser);
-      this.masterGain.connect(this.delayNode);
-      this.masterGain.connect(this.reverbNode);
+      // Main Routing: EQ High -> [Analyser, Delay, Reverb]
+      this.eqHigh.connect(this.analyser);
+      this.eqHigh.connect(this.delayNode);
+      this.eqHigh.connect(this.reverbNode);
       this.analyser.connect(this.ctx.destination);
       
       this.dest = this.ctx.createMediaStreamDestination();
@@ -83,6 +109,12 @@ class AudioEngine {
     if (this.reverbWet && this.ctx) this.reverbWet.gain.setTargetAtTime(reverbMix, this.ctx.currentTime, 0.05);
   }
 
+  setEQ(low: number, mid: number, high: number) {
+    if (this.eqLow && this.ctx) this.eqLow.gain.setTargetAtTime(low, this.ctx.currentTime, 0.05);
+    if (this.eqMid && this.ctx) this.eqMid.gain.setTargetAtTime(mid, this.ctx.currentTime, 0.05);
+    if (this.eqHigh && this.ctx) this.eqHigh.gain.setTargetAtTime(high, this.ctx.currentTime, 0.05);
+  }
+
   getVisualizerLevel() {
     if (!this.analyser) return 0;
     const data = new Uint8Array(this.analyser.frequencyBinCount);
@@ -90,6 +122,20 @@ class AudioEngine {
     let sum = 0;
     for (let i = 0; i < data.length; i++) sum += data[i];
     return (sum / data.length) / 255.0;
+  }
+
+  getVisualizerFrequencyData(array: Uint8Array) {
+    if (!this.analyser) return;
+    this.analyser.getByteFrequencyData(array);
+  }
+
+  getVisualizerTimeDomainData(array: Uint8Array) {
+    if (!this.analyser) return;
+    this.analyser.getByteTimeDomainData(array);
+  }
+
+  getVisualizerBinCount() {
+    return this.analyser ? this.analyser.frequencyBinCount : 0;
   }
 
   startRecording() {

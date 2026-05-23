@@ -560,7 +560,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] text-white font-sans flex flex-col items-center justify-start p-4 md:p-6 selection:bg-[#c934ff]/30 overflow-y-auto" data-theme={appTheme}>
+    <div className="min-h-screen bg-[#050505] text-white font-sans flex flex-col items-center justify-start p-3 md:p-4 selection:bg-[#c934ff]/30 overflow-y-auto relative isolate" data-theme={appTheme}>
+      {/* Background ambient orbs */}
+      <div className="fixed top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-[#c934ff]/[0.02] rounded-full blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-[#00d0ff]/[0.02] rounded-full blur-[120px] pointer-events-none" />
       
       <SettingsModal
         showSettings={showSettings}
@@ -585,8 +588,8 @@ export default function App() {
 
       {/* Main Container with Bento Box layout */}
       <div 
-        className="w-full max-w-[1280px] relative transition-transform duration-75 flex flex-col gap-4 md:gap-6"
-        style={{ transform: `scale(${1 + pulse * 0.005})` }}
+        className="w-full max-w-[1280px] relative transition-transform duration-75 flex flex-col gap-3"
+        style={{ transform: `scale(${1 + pulse * 0.003})` }}
       >
         
         <TopBar
@@ -605,10 +608,10 @@ export default function App() {
         />
 
         {/* BENTO GRID MAIN CONTENT */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
           
           {/* SIDE RAIL: TWEAKS & MIXER */}
-          <div className="lg:col-span-3 flex flex-col gap-4 md:gap-6">
+          <div className="lg:col-span-3 flex flex-col gap-3">
             
             <MixerPanel 
               volume={volume} setVolume={setVolume}
@@ -638,7 +641,7 @@ export default function App() {
           </div>
 
           {/* MAIN COLUMN: PERFORMANCE & SEQUENCER */}
-          <div className="lg:col-span-9 flex flex-col gap-4 md:gap-6">
+          <div className="lg:col-span-9 flex flex-col gap-3">
             
             <PerformanceArea 
               activeNotes={activeNotes} 
@@ -681,12 +684,12 @@ function InstrumentBtn({ label, sub, active, onClick }: { key?: string | number,
     <div
       onClick={onClick}
       className={`
-        flex flex-col items-center justify-center p-2 md:p-3 rounded-lg border cursor-pointer transition-all duration-300
-        ${active ? 'border-[#a120cc] bg-[#1d1223] shadow-[0_0_20px_rgba(161,32,204,0.15)]' : 'border-[#333]/30 bg-[#161616] hover:bg-[#1a1a1a] hover:border-[#444]'}
+        flex flex-col items-center justify-center p-2 rounded-lg border cursor-pointer transition-all duration-300
+        ${active ? 'border-[#a120cc]/50 bg-[#a120cc]/10 shadow-[0_0_15px_rgba(161,32,204,0.2)]' : 'border-white/[0.03] bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10'}
       `}
     >
-      <span className={`text-[9px] md:text-[10px] font-bold tracking-widest uppercase mb-0.5 whitespace-nowrap ${active ? 'text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]' : 'text-[#888]'}`}>{label}</span>
-      <span className={`text-[7px] md:text-[8px] font-mono tracking-wider whitespace-nowrap ${active ? 'text-[#00d0ff]' : 'text-[#444]'}`}>{sub}</span>
+      <span className={`text-[9px] md:text-[10px] font-bold tracking-wider uppercase mb-0.5 whitespace-nowrap ${active ? 'text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]' : 'text-[#888]'}`}>{label}</span>
+      <span className={`text-[8px] font-mono tracking-wider whitespace-nowrap ${active ? 'text-[#00d0ff]' : 'text-[#555]'}`}>{sub}</span>
     </div>
   );
 }

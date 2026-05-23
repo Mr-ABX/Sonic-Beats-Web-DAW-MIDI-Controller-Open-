@@ -58,10 +58,10 @@ export function SettingsKeyMapper({ pianoBinds, drumBinds, onPianoChange, onDrum
         onDragStart={(e) => handleDragStart(e, b.id)}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => handleDrop(e, b.id, isPiano)}
-        className="flex items-center justify-between bg-[#111] border border-[#222] p-1.5 rounded cursor-grab active:cursor-grabbing hover:border-[#444] transition-colors"
+        className="flex items-center justify-between bg-black/40 border border-white/5 p-1.5 rounded-lg cursor-grab active:cursor-grabbing hover:bg-white/5 hover:border-white/10 transition-colors"
       >
         <span className="text-[#888] text-[9px] uppercase tracking-wider pl-1 font-mono">{labelContext}</span>
-        <span className="bg-[#2a1b32] text-[#c671f0] border border-[#3b2347] rounded px-2 py-0.5 text-[9px] font-mono uppercase font-bold min-w-[24px] text-center shadow-sm">
+        <span className={`${isPiano ? 'bg-[#00d0ff]/20 text-[#00d0ff] border-[#00d0ff]/30' : 'bg-[#c934ff]/20 text-[#c934ff] border-[#c934ff]/30'} border rounded px-2 py-0.5 text-[9px] font-mono uppercase font-bold min-w-[24px] text-center shadow-sm`}>
           {b.keyBind || '-'}
         </span>
       </div>
@@ -71,19 +71,19 @@ export function SettingsKeyMapper({ pianoBinds, drumBinds, onPianoChange, onDrum
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col">
-        <h3 className="text-[#fff] text-xs font-bold uppercase mb-1">Visual Mapping Override</h3>
+        <h3 className="text-white text-[10px] font-bold uppercase mb-1">Visual Mapping Override</h3>
         <span className="text-[9px] text-[#888] leading-relaxed">Drag and drop key badges below to swap hardware mappings or computer keys instantly.</span>
       </div>
       
       <div className="grid grid-cols-2 gap-4 max-h-[160px] overflow-y-auto pr-2 custom-scrollbar">
         <div>
-          <h4 className="text-[#00d0ff] text-[9px] font-bold uppercase mb-2 tracking-widest border-b border-[#222] pb-1">Synth Keys</h4>
+          <h4 className="text-[#00d0ff] text-[9px] font-bold uppercase mb-2 tracking-widest border-b border-white/5 pb-1">Synth Keys</h4>
           <div className="flex flex-col gap-1.5">
             {pianoBinds.map(b => <div key={b.id}><BindItem b={b} isPiano={true} /></div>)}
           </div>
         </div>
         <div>
-          <h4 className="text-[#c934ff] text-[9px] font-bold uppercase mb-2 tracking-widest border-b border-[#222] pb-1">Drum Pads</h4>
+          <h4 className="text-[#c934ff] text-[9px] font-bold uppercase mb-2 tracking-widest border-b border-white/5 pb-1">Drum Pads</h4>
           <div className="flex flex-col gap-1.5">
             {drumBinds.map(b => <div key={b.id}><BindItem b={b} isPiano={false} /></div>)}
           </div>

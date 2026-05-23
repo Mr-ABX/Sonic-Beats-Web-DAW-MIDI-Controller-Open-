@@ -17,12 +17,12 @@ function BlackKey({ data, isActive, onTrigger, onRelease }: { data: any, isActiv
       onPointerUp={onRelease}
       onPointerLeave={onRelease}
       className={`
-        absolute top-0 right-0 translate-x-[50%] w-[60%] h-full rounded-b-md z-10
-        pointer-events-auto cursor-pointer transition-all duration-75 flex items-end justify-center pb-2 border-x border-[#111] origin-top
-        ${isActive ? 'bg-[#43105e] border-b-2 border-b-[#c934ff] shadow-[0_0_15px_rgba(201,52,255,0.5)] scale-y-95' : 'bg-[#151515] border-b-2 border-b-[#000] shadow-xl scale-y-100'}
+        absolute top-0 right-0 translate-x-[50%] w-[65%] h-full rounded-b z-10
+        pointer-events-auto cursor-pointer transition-all duration-75 flex items-end justify-center pb-2 origin-top
+        ${isActive ? 'bg-[#43105e] border-b-[3px] border-[#c934ff] shadow-[0_0_15px_rgba(201,52,255,0.5)] scale-y-95' : 'bg-[#18181b] border-b-[3px] border-[#09090b] shadow-2xl scale-y-100'}
       `}
     >
-      <span className={`font-mono text-[8px] md:text-[9px] uppercase font-bold ${isActive ? 'text-white' : 'text-[#444]'}`}>
+      <span className={`font-mono text-[8px] md:text-[9px] uppercase font-semibold ${isActive ? 'text-white' : 'text-[#666]'}`}>
         [{data.keyBind}]
       </span>
     </div>
@@ -33,8 +33,8 @@ export function PerformanceArea({
   activeNotes, triggerDrum, triggerNote, releaseNote, DRUM_PADS, PIANO_KEYS
 }: PerformanceAreaProps) {
   return (
-    <div className="bg-[#111] border border-[#222] rounded-xl p-4 flex flex-col gap-5 shadow-[0_8px_30px_rgba(0,0,0,0.5)] flex-1">
-      <div className="flex items-center justify-between border-b border-[#222] pb-2">
+    <div className="bg-[#0c0c0e]/80 backdrop-blur-2xl border border-white/5 rounded-2xl p-4 flex flex-col gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)] flex-1">
+      <div className="flex items-center justify-between border-b border-white/5 pb-2">
         <div className="flex items-center gap-2">
            <Circle className={`w-3 h-3 text-[#18a058] transition-colors ${activeNotes.size > 0 ? 'fill-current shadow-[0_0_8px_rgba(24,160,88,1)]' : ''}`} />
            <h2 className="text-[#888] text-[10px] font-bold uppercase tracking-widest">Performance Surface</h2>
@@ -50,13 +50,13 @@ export function PerformanceArea({
               key={pad.id}
               onPointerDown={(e) => { e.preventDefault(); triggerDrum(pad.id); }}
               className={`
-                relative aspect-square rounded-lg md:rounded-xl cursor-pointer select-none transition-all duration-75
+                relative aspect-square rounded-[10px] md:rounded-2xl cursor-pointer select-none transition-all duration-75
                 flex flex-col items-center justify-center p-2
                 ${isActive 
                   ? isBlue 
-                    ? 'border border-[#00d0ff] bg-[#1a2f3a] shadow-[0_0_15px_rgba(0,208,255,0.3)] scale-95' 
-                    : 'border border-[#a120cc] bg-[#2a1b32] shadow-[0_0_15px_rgba(161,32,204,0.4)] scale-95'
-                  : 'border border-transparent bg-[#161616] hover:bg-[#1c1c1c] hover:border-[#333] scale-100'
+                    ? 'border border-[#00d0ff]/50 bg-[#00d0ff]/20 shadow-[0_0_20px_rgba(0,208,255,0.3)] scale-[0.97]' 
+                    : 'border border-[#a120cc]/50 bg-[#a120cc]/20 shadow-[0_0_20px_rgba(161,32,204,0.3)] scale-[0.97]'
+                  : 'border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10 scale-100'
                 }
               `}
             >
@@ -77,7 +77,7 @@ export function PerformanceArea({
         })}
       </div>
 
-      <div className="relative h-28 md:h-40 flex justify-center w-full isolate bg-[#161616] border border-[#222] rounded-xl overflow-hidden mt-auto">
+      <div className="relative h-28 md:h-36 flex justify-center w-full isolate bg-black/20 border border-white/5 rounded-xl overflow-hidden mt-auto">
         <div className="flex select-none w-full relative">
           {PIANO_KEYS.map((key) => {
             const isActive = activeNotes.has(key.id);
@@ -89,12 +89,12 @@ export function PerformanceArea({
                   onPointerUp={() => releaseNote(key.id)}
                   onPointerLeave={() => releaseNote(key.id)}
                   className={`
-                    relative flex-1 h-full border-r border-[#333] last:border-r-0
-                    transition-all duration-75 cursor-pointer flex items-end justify-center pb-2 md:pb-4 z-0 origin-top
-                    ${isActive ? 'bg-gradient-to-t from-[#c934ff]/30 to-white/90 shadow-[inset_0_-4px_15px_rgba(201,52,255,0.5)] scale-y-95' : 'bg-[#e5e5e5] hover:bg-white scale-y-100'}
+                    relative flex-1 h-full border-r border-[#1a1a1a] last:border-r-0
+                    transition-all duration-75 cursor-pointer flex items-end justify-center pb-2 md:pb-3 z-0 origin-top
+                    ${isActive ? 'bg-[#e0e0e0] shadow-[inset_0_-4px_15px_rgba(201,52,255,0.2)] scale-[0.98] rounded-b-md' : 'bg-white hover:bg-[#f0f0f0] scale-100'}
                   `}
                 >
-                  <span className={`font-mono text-[9px] md:text-[10px] font-bold uppercase transition-colors ${isActive ? 'text-[#811abf]' : 'text-[#999]'}`}>
+                      <span className={`font-mono text-[9px] md:text-[10px] font-semibold uppercase transition-colors ${isActive ? 'text-[#811abf]' : 'text-[#b0b0b0]'}`}>
                     [{key.keyBind}]
                   </span>
                 </div>

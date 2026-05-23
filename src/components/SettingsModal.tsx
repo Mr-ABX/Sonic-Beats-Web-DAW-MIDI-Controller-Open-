@@ -45,14 +45,14 @@ export function SettingsModal({
   if (!showSettings) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-[#111] border border-[#333] rounded-xl w-full max-w-md p-6 flex flex-col gap-4 shadow-[#222_0_0_40px]">
-        <div className="flex justify-between items-center border-b border-[#222] pb-4">
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-[#0c0c0e]/95 backdrop-blur-3xl border border-white/10 rounded-2xl w-full max-w-md p-5 flex flex-col gap-4 shadow-[0_20px_60px_rgba(0,0,0,0.9)]">
+        <div className="flex justify-between items-center border-b border-white/10 pb-3">
           <h2 className="text-white font-bold tracking-widest uppercase flex items-center gap-2"><Settings className="w-5 h-5 text-[#00d0ff]" /> System Settings</h2>
           <button onClick={() => setShowSettings(false)} className="text-[#888] hover:text-white font-bold text-xl leading-none">&times;</button>
         </div>
         <div className="flex flex-col gap-4 py-2 flex-1 overflow-auto max-h-[70vh] custom-scrollbar pr-2">
-          <div className="bg-[#1a1a1a] border border-[#222] rounded-lg p-3">
+          <div className="bg-white/[0.02] border border-white/5 rounded-xl p-3">
              <h3 className="text-[#fff] text-[10px] font-bold uppercase mb-2 flex items-center gap-2"><ListMusic className="w-3 h-3 text-[#18a058]"/> Keyboard Mapping Config</h3>
              <SettingsKeyMapper 
                 pianoBinds={pianoKeyBinds} 
@@ -62,40 +62,40 @@ export function SettingsModal({
              />
           </div>
           
-          <div className="bg-[#1a1a1a] border border-[#222] rounded-lg p-3">
-             <h3 className="text-[#fff] text-[10px] font-bold uppercase mb-2 flex items-center gap-2"><BarChart2 className="w-3 h-3 text-[#c934ff]"/> Master EQ</h3>
-             <div className="grid grid-cols-3 gap-2">
-                <div className="flex flex-col items-center gap-1">
+          <div className="bg-black/20 border border-white/5 rounded-xl p-3">
+             <h3 className="text-white text-[10px] font-bold uppercase mb-2 flex items-center gap-2"><BarChart2 className="w-3 h-3 text-[#c934ff]"/> Master EQ</h3>
+             <div className="grid grid-cols-3 gap-3 px-2">
+                <div className="flex flex-col items-center gap-2">
                   <span className="text-[#888] text-[8px] font-mono uppercase tracking-widest">Low</span>
-                  <input type="range" min="-12" max="12" step="0.1" value={eqLow} onChange={e => setEqLow(parseFloat(e.target.value))} className="w-full h-1 accent-[#c934ff]" />
+                  <input type="range" min="-12" max="12" step="0.1" value={eqLow} onChange={e => setEqLow(parseFloat(e.target.value))} className="w-full accent-[#c934ff]" />
                 </div>
-                <div className="flex flex-col items-center gap-1">
+                <div className="flex flex-col items-center gap-2">
                   <span className="text-[#888] text-[8px] font-mono uppercase tracking-widest">Mid</span>
-                  <input type="range" min="-12" max="12" step="0.1" value={eqMid} onChange={e => setEqMid(parseFloat(e.target.value))} className="w-full h-1 accent-[#c934ff]" />
+                  <input type="range" min="-12" max="12" step="0.1" value={eqMid} onChange={e => setEqMid(parseFloat(e.target.value))} className="w-full accent-[#c934ff]" />
                 </div>
-                <div className="flex flex-col items-center gap-1">
+                <div className="flex flex-col items-center gap-2">
                   <span className="text-[#888] text-[8px] font-mono uppercase tracking-widest">High</span>
-                  <input type="range" min="-12" max="12" step="0.1" value={eqHigh} onChange={e => setEqHigh(parseFloat(e.target.value))} className="w-full h-1 accent-[#c934ff]" />
+                  <input type="range" min="-12" max="12" step="0.1" value={eqHigh} onChange={e => setEqHigh(parseFloat(e.target.value))} className="w-full accent-[#c934ff]" />
                 </div>
              </div>
           </div>
 
-          <div className="bg-[#1a1a1a] border border-[#222] rounded-lg p-3">
+          <div className="bg-black/20 border border-white/5 rounded-xl p-3">
              <h3 className="text-[#fff] text-[10px] font-bold uppercase mb-2">Interface Theme</h3>
-             <select value={appTheme} onChange={e => setAppTheme(e.target.value)} className="bg-[#111] text-[#00d0ff] text-[10px] p-2 border border-[#333] rounded uppercase font-bold focus:outline-none w-full">
-                <option value="neon-cyber">Neon Cyber</option>
-                <option value="classic-gold">Classic Gold</option>
-                <option value="industrial-green">Industrial Green</option>
+             <select value={appTheme} onChange={e => setAppTheme(e.target.value)} className="bg-white/5 text-[#00d0ff] text-[10px] p-2 border border-white/10 rounded-md uppercase font-bold focus:outline-none w-full appearance-none">
+                <option value="neon-cyber" className="bg-[#111]">Neon Cyber</option>
+                <option value="classic-gold" className="bg-[#111]">Classic Gold</option>
+                <option value="industrial-green" className="bg-[#111]">Industrial Green</option>
              </select>
           </div>
 
-          <div className="bg-[#1a1a1a] border border-[#222] rounded-lg p-3">
+          <div className="bg-black/20 border border-white/5 rounded-xl p-3">
              <h3 className="text-[#fff] text-[10px] font-bold uppercase mb-2 flex items-center gap-2"><Activity className="w-3 h-3 text-[#00d0ff]"/> MIDI Learn Mode</h3>
-             <p className="text-[#888] text-[9px] mb-3">Click 'Learn', then select a UI parameter like Volume or Delay, and move a physical knob on your MIDI controller to bind them.</p>
-             <div className="flex gap-2">
+             <p className="text-[#888] text-[9px] mb-3 leading-relaxed">Click 'Learn', then select a UI parameter like Volume or Delay, and move a physical knob on your MIDI controller to bind them.</p>
+             <div className="flex items-center justify-between gap-3">
                <button 
                  onClick={() => setMidiLearnMode(midiLearnMode ? null : 'waiting')}
-                 className={`text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded transition-colors border ${midiLearnMode ? 'bg-[#c934ff]/20 text-[#c934ff] border-[#c934ff] animate-pulse' : 'bg-[#111] text-[#888] border-[#333] hover:text-white'}`}
+                 className={`text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-md transition-colors border flex-1 ${midiLearnMode ? 'bg-[#c934ff]/10 text-[#c934ff] border-[#c934ff]/50 animate-pulse window-shadow' : 'bg-white/5 text-[#888] border-white/10 hover:text-white hover:bg-white/10'}`}
                >
                  {midiLearnMode === 'waiting' ? 'Waiting for UI Click...' : midiLearnMode === 'listening' ? 'Move MIDI Knob...' : 'Start MIDI Learn'}
                </button>

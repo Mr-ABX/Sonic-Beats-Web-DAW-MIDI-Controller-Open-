@@ -278,10 +278,10 @@ class AudioEngine {
     this.activeNotes.delete(noteId);
   }
 
-  playDrum(type: string, drumKit: string = '808', customSample?: AudioBuffer | null) {
+  playDrum(type: string, drumKit: string = '808', customSample?: AudioBuffer | null, time?: number) {
     this.init();
     if (!this.ctx || !this.drumGain) return;
-    const t = this.ctx.currentTime;
+    const t = time !== undefined ? time : this.ctx.currentTime;
 
     // Handle custom sample override for clap
     if (type === 'clap' && customSample) {

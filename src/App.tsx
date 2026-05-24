@@ -230,23 +230,62 @@ export default function App() {
   useEffect(() => { drumKitRef.current = drumKit; }, [drumKit]);
 
   // Sequencer loop
+  const nextNoteTimeRef = useRef(0);
+  const currentSeqStepRef = useRef(0);
+  
   useEffect(() => {
-    if (!isPlaying) return;
-    let step = 0;
-    setCurrentStep(0);
-    const intervalTime = (60 / bpm) / 4 * 1000;
+    if (!isPlaying) {
+       setCurrentStep(0);
+       currentSeqStepRef.current = 0;
+       return;
+    }
     
-    const intervalId = setInterval(() => {
-      ['kick', 'snare', 'hatCl', 'clap'].forEach(drum => {
-        if (sequenceRef.current[drum][step]) {
-           audio.playDrum(drum, drumKitRef.current, customSampleRef.current);
+    // Resume context if needed
+    if (audio.ctx && audio.ctx.state === 'suspended') {
+       audio.ctx.resume();
+    }
+    // Set initial time slightly in the future to allow for UI/audio sync startup
+    nextNoteTimeRef.current = (audio.ctx ? audio.ctx.currentTime : 0) + 0.05;
+    
+    let timerID: number;
+    const scheduleAheadTime = 0.1; // 100ms lookahead
+    
+    const scheduleNext = () => {
+      if (!audio.ctx) return;
+      const secondsPerBeat = 60.0 / bpm;
+      
+      while (nextNoteTimeRef.current < audio.ctx.currentTime + scheduleAheadTime) {
+        const step = currentSeqStepRef.current;
+        const time = nextNoteTimeRef.current;
+        
+        // Schedule audio playback for this step
+        ['kick', 'snare', 'hatCl', 'clap'].forEach(drum => {
+          if (sequenceRef.current[drum][step]) {
+             audio.playDrum(drum, drumKitRef.current, customSampleRef.current, time);
+          }
+        });
+        
+        // Schedule UI update
+        const timeToPlay = time - audio.ctx.currentTime;
+        if (timeToPlay > 0) {
+            setTimeout(() => {
+               if (isPlaying) setCurrentStep(step);
+            }, timeToPlay * 1000);
+        } else {
+            setCurrentStep(step);
         }
-      });
-      setCurrentStep(step);
-      step = (step + 1) % 16;
-    }, intervalTime);
+        
+        // Advance time by a 16th note
+        nextNoteTimeRef.current += 0.25 * secondsPerBeat;
+        currentSeqStepRef.current = (step + 1) % 16;
+      }
+      
+      timerID = window.setTimeout(scheduleNext, 25.0);
+    };
     
-    return () => clearInterval(intervalId);
+    scheduleNext();
+    
+    return () => window.clearTimeout(timerID);
   }, [isPlaying, bpm]);
 
   const toggleStep = (drum: string, index: number) => {
